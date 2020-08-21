@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  app:
+    build: ./
+    image: master-user
+    container_name: master-user
+    ports:
+      - "8001:8080"
+    depends_on:
+      - postgres_user
+  postgres_user:
+    image: postgres:alpine
+    container_name: postgres_user
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "1400:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=mydbpostgres
+
