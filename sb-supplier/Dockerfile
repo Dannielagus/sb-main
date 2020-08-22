@@ -11,5 +11,5 @@ RUN mvn install -DskipTests
 FROM openjdk:8-jre-alpine
 WORKDIR /app
 COPY --from=app-build /app/target/supplier-service.jar /app
-EXPOSE 8001
+EXPOSE 8002
 ENTRYPOINT ["java", "-jar", "supplier-service.jar"]
