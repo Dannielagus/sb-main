@@ -13,32 +13,32 @@ services:
       - ./postgres-user-data:/var/lib/postgresql/data
     networks:
       - sb_network
-  # postgres_supplier:
-  #   container_name: postgres_supplier
-  #   image: postgres:alpine
-  #   ports:
-  #     - "1401:5432"
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres_dev
-  #     - POSTGRES_DB=postgres
-  #   volumes:
-  #     - ./postgres-supplier-data:/var/lib/postgresql/data
-  #   networks:
-  #     - sb_network
-  # postgres_item:
-  #   container_name: postgres_item
-  #   image: postgres:alpine
-  #   ports:
-  #     - "1402:5432"
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres_dev
-  #     - POSTGRES_DB=postgres
-  #   volumes:
-  #     - ./postgres-item-data:/var/lib/postgresql/data
-  #   networks:
-  #     - sb_network
+  postgres_supplier:
+    container_name: postgres_supplier
+    image: postgres:alpine
+    ports:
+      - "1401:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_dev
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgres-supplier-data:/var/lib/postgresql/data
+    networks:
+      - sb_network
+  postgres_item:
+    container_name: postgres_item
+    image: postgres:alpine
+    ports:
+      - "1402:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_dev
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgres-item-data:/var/lib/postgresql/data
+    networks:
+      - sb_network
   sb_server:
     container_name: sb_server
     build:
@@ -71,46 +71,46 @@ services:
       - postgres_user
     networks:
       - sb_network
-  # sb_supplier:
-  #   container_name: sb_supplier
-  #   build:
-  #     context: ./sb-supplier
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8002:8002"
-  #   environment:
-  #     - POSTGRES_HOST=postgres_supplier
-  #     - POSTGRES_PORT=1401
-  #     - POSTGRES_DATABASE=postgres
-  #     - POSTGRES_USERNAME=postgres
-  #     - POSTGRES_PASSWORD=postgres_dev
-  #     - EUREKA_HOST=sb_server
-  #     - EUREKA_PORT=8000
-    # depends_on:
-    #   - sb_server
-    #   - postgres_supplier
-  #   networks:
-  #     - sb_network
-  # sb_item:
-  #   container_name: sb_item
-  #   build:
-  #     context: ./sb-item
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8003:8003"
-  #   environment:
-  #     - POSTGRES_HOST=postgres_item
-  #     - POSTGRES_PORT=1402
-  #     - POSTGRES_DATABASE=postgres
-  #     - POSTGRES_USERNAME=postgres
-  #     - POSTGRES_PASSWORD=postgres_dev
-  #     - EUREKA_HOST=sb_server
-  #     - EUREKA_PORT=8000
-    # depends_on:
-    #   - sb_server
-    #   - postgres_item
-  #   networks:
-  #     - sb_network
+  sb_supplier:
+    container_name: sb_supplier
+    build:
+      context: ./sb-supplier
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - POSTGRES_HOST=postgres_supplier
+      - POSTGRES_PORT=1401
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres_dev
+      - EUREKA_HOST=sb_server
+      - EUREKA_PORT=8000
+    depends_on:
+      - sb_server
+      - postgres_supplier
+    networks:
+      - sb_network
+  sb_item:
+    container_name: sb_item
+    build:
+      context: ./sb-item
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      - POSTGRES_HOST=postgres_item
+      - POSTGRES_PORT=1402
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres_dev
+      - EUREKA_HOST=sb_server
+      - EUREKA_PORT=8000
+    depends_on:
+      - sb_server
+      - postgres_item
+    networks:
+      - sb_network
 networks:
   sb_network:
     name: sb_network
