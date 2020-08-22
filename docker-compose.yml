@@ -13,6 +13,7 @@ services:
       - ./postgres-user-data:/var/lib/postgresql/data
     networks:
       - sb_network
+    command: -p 1400
   postgres_supplier:
     container_name: postgres_supplier
     image: postgres:alpine
@@ -26,6 +27,7 @@ services:
       - ./postgres-supplier-data:/var/lib/postgresql/data
     networks:
       - sb_network
+    command: -p 1401
   postgres_item:
     container_name: postgres_item
     image: postgres:alpine
@@ -39,6 +41,7 @@ services:
       - ./postgres-item-data:/var/lib/postgresql/data
     networks:
       - sb_network
+    command: -p 1402
   sb_server:
     container_name: sb_server
     build:
@@ -47,10 +50,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - EUREKA_HOST=sb_server
-      - EUREKA_PORT=8000
+      - EUREKA_DEFAULT_ZONE=http://localhost:8000/eureka
     networks:
       - sb_network
+    command: -p 8000
   sb_user:
     container_name: sb_user
     build:
@@ -59,18 +62,16 @@ services:
     ports:
       - "8001:8001"
     environment:
-      - POSTGRES_HOST=postgres_user
-      - POSTGRES_PORT=1400
-      - POSTGRES_DATABASE=postgres
+      - POSTGRES_URL=jdbc:postgresql://postgres_user:1400/postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres_dev
-      - EUREKA_HOST=sb_server
-      - EUREKA_PORT=8000
+      - EUREKA_DEFAULT_ZONE=http://sb_server:8000/eureka
+      - EUREKA_INSTANCE_HOST=sb_server
     depends_on:
-      - sb_server
       - postgres_user
     networks:
       - sb_network
+    command: -p 8001
   sb_supplier:
     container_name: sb_supplier
     build:
@@ -79,18 +80,16 @@ services:
     ports:
       - "8002:8002"
     environment:
-      - POSTGRES_HOST=postgres_supplier
-      - POSTGRES_PORT=1401
-      - POSTGRES_DATABASE=postgres
+      - POSTGRES_URL=jdbc:postgresql://postgres_supplier:1401/postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres_dev
-      - EUREKA_HOST=sb_server
-      - EUREKA_PORT=8000
+      - EUREKA_DEFAULT_ZONE=http://sb_server:8000/eureka
+      - EUREKA_INSTANCE_HOST=sb_server
     depends_on:
-      - sb_server
       - postgres_supplier
     networks:
       - sb_network
+    command: -p 8002
   sb_item:
     container_name: sb_item
     build:
@@ -99,18 +98,16 @@ services:
     ports:
       - "8003:8003"
     environment:
-      - POSTGRES_HOST=postgres_item
-      - POSTGRES_PORT=1402
-      - POSTGRES_DATABASE=postgres
+      - POSTGRES_URL=jdbc:postgresql://postgres_item:1402/postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres_dev
-      - EUREKA_HOST=sb_server
-      - EUREKA_PORT=8000
+      - EUREKA_DEFAULT_ZONE=http://sb_server:8000/eureka
+      - EUREKA_INSTANCE_HOST=sb_server
     depends_on:
-      - sb_server
       - postgres_item
     networks:
       - sb_network
+    command: -p 8003
 networks:
   sb_network:
-    name: sb_network
+    driver: bridge
