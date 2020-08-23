@@ -87,11 +87,12 @@ services:
       - EUREKA_INSTANCE_HOST=supplier
     depends_on:
       - postgres_supplier
+      - user
     networks:
       - sb_network
     command: -p 8002
   item:
-    container_name: sb_item
+    container_name: item
     build:
       context: ./sb-item
       dockerfile: Dockerfile
@@ -105,6 +106,7 @@ services:
       - EUREKA_INSTANCE_HOST=item
     depends_on:
       - postgres_item
+      - user
     networks:
       - sb_network
     command: -p 8003
