@@ -42,20 +42,20 @@ services:
     networks:
       - sb_network
     command: -p 1402
-  sb_server:
-    container_name: sb_server
+  euserver:
+    container_name: euserver
     build:
       context: ./sb-server
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
-      - EUREKA_DEFAULT_ZONE=http://localhost:8000/eureka
+      - EUREKA_DEFAULT_ZONE=http://euserver:8000/eureka
     networks:
       - sb_network
     command: -p 8000
-  sb_user:
-    container_name: sb_user
+  user:
+    container_name: user
     build:
       context: ./sb-user
       dockerfile: Dockerfile
@@ -65,15 +65,15 @@ services:
       - POSTGRES_URL=jdbc:postgresql://postgres_user:1400/postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres_dev
-      - EUREKA_DEFAULT_ZONE=http://sb_server:8000/eureka
-      - EUREKA_INSTANCE_HOST=sb_server
+      - EUREKA_DEFAULT_ZONE=http://euserver:8000/eureka
+      - EUREKA_INSTANCE_HOST=user
     depends_on:
       - postgres_user
     networks:
       - sb_network
     command: -p 8001
-  sb_supplier:
-    container_name: sb_supplier
+  supplier:
+    container_name: supplier
     build:
       context: ./sb-supplier
       dockerfile: Dockerfile
@@ -83,14 +83,14 @@ services:
       - POSTGRES_URL=jdbc:postgresql://postgres_supplier:1401/postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres_dev
-      - EUREKA_DEFAULT_ZONE=http://sb_server:8000/eureka
-      - EUREKA_INSTANCE_HOST=sb_server
+      - EUREKA_DEFAULT_ZONE=http://euserver:8000/eureka
+      - EUREKA_INSTANCE_HOST=supplier
     depends_on:
       - postgres_supplier
     networks:
       - sb_network
     command: -p 8002
-  sb_item:
+  item:
     container_name: sb_item
     build:
       context: ./sb-item
@@ -101,8 +101,8 @@ services:
       - POSTGRES_URL=jdbc:postgresql://postgres_item:1402/postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres_dev
-      - EUREKA_DEFAULT_ZONE=http://sb_server:8000/eureka
-      - EUREKA_INSTANCE_HOST=sb_server
+      - EUREKA_DEFAULT_ZONE=http://euserver:8000/eureka
+      - EUREKA_INSTANCE_HOST=item
     depends_on:
       - postgres_item
     networks:
